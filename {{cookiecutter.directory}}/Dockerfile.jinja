@@ -1,1 +1,2 @@
-FROM postgres:{{ cookiecutter.postgres_version }}
+FROM ghcr.io/zaproxy/zaproxy:{{cookiecutter.zap_proxy_version}}
+CMD ["zap.sh", "-daemon","-port", "{{cookiecutter.port}}", "-host", "{{cookiecutter.host}}", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "api.disablekey=true"]

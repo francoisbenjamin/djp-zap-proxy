@@ -1,34 +1,36 @@
 local ddb = import 'ddb.docker.libjsonnet';
 
 local defaultName = ddb.File(std.thisFile).parent.name;
+local domain_ext = std.extVar("core.domain.ext");
+local domain_sub = std.extVar("core.domain.sub");
+local domain = std.join('.', [domain_sub, domain_ext]);
 
-// Docker compose configuration factory for this package.
 local factory(name, params={}) =
-    // Sanitize and set params default values in o using ddb.params.value and ddb.params.array.
-	local o = {
-		// param1: ddb.params.value(params, 'param1', 'default1'),
-		// param2: ddb.params.array(params, 'param2', ['default2']),
-	};
+    local o = {
+        port: ddb.params.value(params, 'port', 8080),
+        domain: ddb.params.value(params, 'domain', domain)
+    };
 
-    // Return a docker compose configuration that should configure this package inside a global configuration.
-	{services+: {
-		[name]+:
-			ddb.Build(defaultName) // +
-			//ddb.User() +
-			//ddb.Binary("psql", "/project", "psql") +
-			//ddb.Expose("5432") +
-			/*{
-				 environment+: {
-					"POSTGRES_USER": o.login,
-					"POSTGRES_PASSWORD": o.password,
-					"POSTGRES_DB": o.database
-				  },
-				  volumes+: [
-					 ddb.path.project + ":/project",
-					 name + "-data:/var/lib/postgresql/data"
-				  ]
-			}*/
-		}
+	{
+        networks: {
+            'zap-proxy': {
+              driver: 'bridge',
+            }
+        },
+        services+: {
+            [name]+:
+                ddb.Build(defaultName)  +
+                ddb.Binary("zap.sh", "/project", "zap.sh") +
+                ddb.VirtualHost(o.port, std.join('.', ["zap-proxy", o.domain]), "zap-proxy") +
+                ddb.Expose(o.port) +
+                {
+                    networks: ['zap-proxy'],
+                    environment+: {},
+                    volumes+: [
+                     ddb.path.project + ":/project",
+                    ]
+                }
+        }
 	};
 
 {

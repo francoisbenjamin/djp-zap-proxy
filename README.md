@@ -1,10 +1,10 @@
-# djp-template
+# djp-zap-proxy
 
 A [ddb](https://inetum-orleans.github.io/docker-devbox-ddb) jsonnet package (**djp**).
 
 ## Description
 
-Write a short description of this **djp** package.
+[Zap proxy](https://www.zaproxy.org/) djp package
 
 ## Snippet
 
@@ -13,7 +13,11 @@ Write a short description of this **djp** package.
 ```yaml
 cookiecutter:
   templates:
-    - template: gh:inetum-orleans/djp-template
+    - template: gh:inetum-orleans/zap-proxy
+      extra_context:
+        zap_version: 'stable'
+        port: 8080
+        host: 0.0.0.0
 ```
 
 - `docker-compose.yml.jsonnet`
@@ -21,18 +25,18 @@ cookiecutter:
 ```jsonnet
 ddb.Compose(
   ddb.with(
-    import '.docker/djp/djp.libjsonnet',
-    params={param1: 'value1', param2: ['value2']}
+    import '.docker/zap-proxy/djp.libjsonnet'
   )
 )
 ```
 
 ## Parameters
 
-| name  | type | description |
-| ------------- | ------------- | ------------- |
-| param1  | string  | Description of first parameter
-| param2  | string[]  | Description of second parameter
+| name              | type | description |
+|-------------------| ------------- | ------------- |
+| zap_proxy_version | string  | The tag version of the Docker image of Zap Proxy, ex : ghcr.io/zaproxy/zaproxy:stable
+| port              | string  | The port used to connect to Zap Proxy, ex: 8080
+| host              | string  | The host used to connect to Zap Proxy, ex: 0.0.0.0
 
 ## Usage
 
