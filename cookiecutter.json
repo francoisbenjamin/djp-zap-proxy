@@ -1,0 +1,4 @@
+{
+  "directory": ".docker/djp",
+  "postgres_version": "13"
+}
