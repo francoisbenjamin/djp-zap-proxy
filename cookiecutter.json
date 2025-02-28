@@ -1,6 +1,6 @@
 {
-  "directory": ".docker/zap-proxy",
-  "zap_proxy_version": "stable",
+  "directory": ".docker/zaproxy",
+  "zaproxy_version": "stable",
   "host": "0.0.0.0",
   "port": "8080"
 }

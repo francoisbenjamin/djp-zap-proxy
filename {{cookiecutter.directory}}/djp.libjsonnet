@@ -12,19 +12,14 @@ local factory(name, params={}) =
     };
 
 	{
-        networks: {
-            'zap-proxy': {
-              driver: 'bridge',
-            }
-        },
         services+: {
             [name]+:
                 ddb.Build(defaultName)  +
                 ddb.Binary("zap.sh", "/project", "zap.sh") +
-                ddb.VirtualHost(o.port, std.join('.', ["zap-proxy", o.domain]), "zap-proxy") +
+                ddb.VirtualHost(o.port, std.join('.', ["zaproxy", o.domain]), "zaproxy") +
                 ddb.Expose(o.port) +
                 {
-                    networks: ['zap-proxy'],
+                    networks: ['default'],
                     environment+: {},
                     volumes+: [
                      ddb.path.project + ":/project",
